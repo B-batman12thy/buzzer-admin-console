@@ -14,7 +14,14 @@ export type IconName =
   | 'sports'
   | 'search'
   | 'panel'
-  | 'chevron-down';
+  | 'chevron-down'
+  | 'chevron-left'
+  | 'chevron-right'
+  | 'plus-circle'
+  | 'edit'
+  | 'trash'
+  | 'close'
+  | 'sort';
 
 @Component({
   selector: 'bz-icon',

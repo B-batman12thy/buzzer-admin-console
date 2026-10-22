@@ -28,7 +28,7 @@ export const routes: Routes = [
         title: 'Sport Management | Buzzer',
         data: { title: 'Sport Management' },
         loadComponent: () =>
-          import('./features/sport-management/sport-management').then((m) => m.SportManagement),
+          import('./features/sports/sport-list/sport-list').then((m) => m.SportList),
       },
       ...[
         ['verifications', 'Verifications'],

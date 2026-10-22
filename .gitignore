@@ -44,3 +44,5 @@ __screenshots__/
 Thumbs.db
 api-probe.txt
 probe.sh
+api-spec.txt
+probe2.sh

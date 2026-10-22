@@ -1,0 +1,121 @@
+<div class="toolbar">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <span class="crumb">Sport</span>
+  </nav>
+  @if (canEdit()) {
+    <button type="button" class="bz-btn bz-btn--outline bz-btn--small" (click)="dialog.set({ mode: 'create' })">
+      <bz-icon name="plus-circle" [size]="14" />
+      Add Sport
+    </button>
+  }
+</div>
+
+<section class="stats" aria-label="Catalogue totals">
+  <bz-stat-card label="Sports" [value]="totals()?.sports ?? null" [loading]="!totals()" />
+  <bz-stat-card label="Governing Bodies" [value]="totals()?.governingBodies ?? null" [loading]="!totals()" />
+  <bz-stat-card label="Organisations" [value]="totals()?.organisations ?? null" [loading]="!totals()" />
+  <bz-stat-card label="Participants" [value]="totals()?.participants ?? null" [loading]="!totals()" />
+</section>
+
+<div class="table-wrap">
+  <table [class.is-loading]="loading()">
+    <thead>
+      <tr>
+        <th scope="col">
+          <button type="button" class="sort" (click)="toggleSort()" [attr.aria-sort]="sortOrder() === 'asc' ? 'ascending' : 'descending'">
+            Sport
+            <bz-icon name="chevron-down" [size]="16" [class.up]="sortOrder() === 'desc'" />
+          </button>
+        </th>
+        <th scope="col">Governing Bodies</th>
+        <th scope="col">Organisations</th>
+        <th scope="col">Participants</th>
+        @if (canEdit()) {
+          <th scope="col" class="actions-col">Actions</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (sport of sports(); track sport.id; let i = $index) {
+        <tr>
+          <td>
+            <span class="sport">
+              @if (sport.iconUrl && !brokenIcons().has(sport.id)) {
+                <img [src]="sport.iconUrl" alt="" (error)="markBroken(sport.id)" />
+              } @else {
+                <span class="badge" [style.background]="accent(i)">{{ sport.name.charAt(0).toUpperCase() }}</span>
+              }
+              <span class="name" [title]="sport.description ?? ''">{{ sport.name }}</span>
+            </span>
+          </td>
+          <td>{{ sport.governingBodyCount ?? 0 }}</td>
+          <td>{{ sport.organizationCount ?? 0 }}</td>
+          <td>{{ sport.participantCount ?? 0 }}</td>
+          @if (canEdit()) {
+            <td class="actions-col">
+              <button type="button" class="icon-btn" [attr.aria-label]="'Edit ' + sport.name" (click)="dialog.set({ mode: 'edit', sport })">
+                <bz-icon name="edit" [size]="18" />
+              </button>
+              <button type="button" class="icon-btn danger" [attr.aria-label]="'Delete ' + sport.name" (click)="askDelete(sport)">
+                <bz-icon name="trash" [size]="18" />
+              </button>
+            </td>
+          }
+        </tr>
+      } @empty {
+        @if (!loading()) {
+          <tr>
+            <td [attr.colspan]="canEdit() ? 5 : 4" class="empty">
+              @if (loadError(); as error) {
+                {{ error }}
+              } @else if (searchTerm()) {
+                No sport matches "{{ searchTerm() }}".
+              } @else {
+                No sports yet. Use “Add Sport” to create the first one.
+              }
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+
+  @if (loading() && !sports().length) {
+    <p class="loading-text">Loading sports…</p>
+  }
+</div>
+
+@if (meta(); as m) {
+  @if (m.totalPages > 1) {
+    <nav class="pager" aria-label="Pagination">
+      <span>{{ m.total }} sports · page {{ m.page }} of {{ m.totalPages }}</span>
+      <div>
+        <button type="button" class="icon-btn" aria-label="Previous page" [disabled]="m.page <= 1" (click)="goTo(m.page - 1)">
+          <bz-icon name="chevron-left" [size]="18" />
+        </button>
+        <button type="button" class="icon-btn" aria-label="Next page" [disabled]="m.page >= m.totalPages" (click)="goTo(m.page + 1)">
+          <bz-icon name="chevron-right" [size]="18" />
+        </button>
+      </div>
+    </nav>
+  }
+}
+
+@if (dialog(); as d) {
+  <bz-sport-dialog
+    [sport]="d.mode === 'edit' ? d.sport : null"
+    (saved)="onSaved()"
+    (closed)="dialog.set(null)"
+  />
+}
+
+@if (toDelete(); as sport) {
+  <bz-confirm-dialog
+    title="Delete Sport"
+    [message]="'Delete “' + sport.name + '” from the catalogue? It will disappear from every list.'"
+    [busy]="deleting()"
+    [error]="deleteError()"
+    (confirmed)="confirmDelete()"
+    (cancelled)="toDelete.set(null)"
+  />
+}

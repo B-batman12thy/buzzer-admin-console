@@ -1,0 +1,72 @@
+<bz-dialog [title]="isEdit ? 'Edit Sport' : 'Add Sport'" (closed)="closed.emit()">
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="layout">
+      <div class="preview" aria-hidden="true">
+        @if (iconPreview() && !invalid('iconUrl') && !iconBroken()) {
+          <img [src]="iconPreview()" alt="" (error)="iconBroken.set(true)" />
+        } @else {
+          <span class="placeholder">{{ form.controls.name.value.charAt(0).toUpperCase() || '?' }}</span>
+        }
+        <small>Icon preview</small>
+      </div>
+
+      <div class="fields">
+        <div class="bz-field">
+          <label for="sport-name">Name</label>
+          <input
+            id="sport-name"
+            formControlName="name"
+            placeholder="Sport name"
+            maxlength="100"
+            [class.invalid]="invalid('name')"
+          />
+          @if (invalid('name')) {
+            <span class="error">Name is required.</span>
+          }
+        </div>
+
+        <div class="bz-field">
+          <label for="sport-description">Description</label>
+          <textarea
+            id="sport-description"
+            formControlName="description"
+            placeholder="Short description (optional)"
+            maxlength="500"
+          ></textarea>
+        </div>
+
+        <div class="bz-field">
+          <label for="sport-icon">Icon URL</label>
+          <input
+            id="sport-icon"
+            type="url"
+            formControlName="iconUrl"
+            placeholder="https://example.com/icon.svg"
+            [class.invalid]="invalid('iconUrl')"
+            (input)="iconBroken.set(false)"
+          />
+          @if (invalid('iconUrl')) {
+            <span class="error">Enter a valid URL starting with http:// or https://</span>
+          } @else if (iconBroken()) {
+            <span class="hint">The image could not be loaded from this URL.</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (errorMessage(); as message) {
+      <p class="alert" role="alert">{{ message }}</p>
+    }
+
+    <footer class="bz-dialog-actions">
+      <button type="button" class="bz-btn bz-btn--outline" (click)="closed.emit()">Cancel</button>
+      <button
+        type="submit"
+        class="bz-btn bz-btn--primary"
+        [disabled]="saving() || form.invalid || (isEdit && form.pristine)"
+      >
+        {{ saving() ? 'Saving…' : 'Save' }}
+      </button>
+    </footer>
+  </form>
+</bz-dialog>
