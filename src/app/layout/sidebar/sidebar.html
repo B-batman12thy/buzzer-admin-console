@@ -1,0 +1,70 @@
+<div class="brand">
+  <a routerLink="/dashboard" class="logo" aria-label="Buzzer Admin Console">
+    <span class="logo-mark">B</span>
+    @if (!layout.sidebarCollapsed()) {
+      <span class="logo-text">
+        <strong>Buzzer</strong>
+        <small>Admin Console</small>
+      </span>
+    }
+  </a>
+  <button
+    type="button"
+    class="collapse-btn"
+    (click)="layout.toggleSidebar()"
+    [attr.aria-label]="layout.sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
+    [attr.aria-expanded]="!layout.sidebarCollapsed()"
+  >
+    <bz-icon name="panel" [size]="22" />
+  </button>
+</div>
+
+<nav class="nav" aria-label="Main navigation">
+  @for (group of groups; track group.label) {
+    <section class="group">
+      @if (!layout.sidebarCollapsed()) {
+        <button
+          type="button"
+          class="group-title"
+          (click)="toggleGroup(group.label)"
+          [attr.aria-expanded]="!isFolded(group.label)"
+        >
+          <span>{{ group.label }}</span>
+          <bz-icon name="chevron-down" [size]="18" [class.rotated]="isFolded(group.label)" />
+        </button>
+      } @else {
+        <hr class="group-divider" />
+      }
+
+      @if (layout.sidebarCollapsed() || !isFolded(group.label)) {
+        <ul>
+          @for (item of group.items; track item.path) {
+            <li>
+              <a
+                [routerLink]="item.path"
+                routerLinkActive="active"
+                class="nav-item"
+                [attr.title]="layout.sidebarCollapsed() ? item.label : null"
+              >
+                <bz-icon [name]="item.icon" />
+                @if (!layout.sidebarCollapsed()) {
+                  <span>{{ item.label }}</span>
+                }
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
+</nav>
+
+<footer class="user">
+  <span class="avatar" [attr.title]="auth.user()?.email">{{ initial() }}</span>
+  @if (!layout.sidebarCollapsed()) {
+    <span class="user-info">
+      <span class="email">{{ auth.user()?.email }}</span>
+      <button type="button" class="sign-out" (click)="auth.logout()">Sign out</button>
+    </span>
+  }
+</footer>

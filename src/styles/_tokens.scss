@@ -1,0 +1,32 @@
+// Buzzer design system tokens (Figma > Design System)
+:root {
+  // Colors
+  --bz-base: #131515;
+  --bz-surface: #212121;
+  --bz-gray: #3e3e3e;
+  --bz-yellow: #ffb414;
+  --bz-red: #ec193c;
+  --bz-green: #2ed368;
+  --bz-orange: #ff5b14;
+  --bz-white: #ffffff;
+  --bz-black: #000000;
+
+  // Focus / overlay whites
+  --bz-focus-3: #ffffff08;
+  --bz-focus-10: #ffffff1a;
+  --bz-focus-24: #ffffff3d;
+  --bz-focus-50: #ffffff8a;
+
+  // Typography
+  --bz-font-title: 'Poppins', sans-serif;
+  --bz-font-body: 'Inter', sans-serif;
+
+  // Layout
+  --bz-sidebar-w: 311px;
+  --bz-sidebar-w-collapsed: 72px;
+  --bz-header-h: 65px;
+  --bz-radius: 12px;
+  --bz-radius-sm: 8px;
+  --bz-gap: 16px;
+  --bz-transition: 200ms ease;
+}

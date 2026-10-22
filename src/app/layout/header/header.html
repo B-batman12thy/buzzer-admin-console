@@ -1,0 +1,12 @@
+<h1>{{ title() }}</h1>
+
+<label class="search">
+  <bz-icon name="search" [size]="22" />
+  <input
+    type="search"
+    placeholder="Search"
+    aria-label="Search"
+    [value]="layout.searchTerm()"
+    (input)="onSearch($event)"
+  />
+</label>
